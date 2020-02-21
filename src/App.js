@@ -106,9 +106,26 @@ function Products() {
   const [newDescription, setNewDescription] = useState("");
   const [newValue, setNewValue] = useState("");
 
+  const removeProduct = useCallback(
+    id => {
+      setProducts([...products.filter(a => a.id !== id)]);
+    },
+    [products]
+  );
+
   const addProduct = useCallback(
     e => {
       e.preventDefault();
+
+      if (!newDescription) {
+        alert("Campo descrição obrigatório");
+        return;
+      }
+
+      if (!newValue) {
+        alert("Campo valor obrigatório");
+        return;
+      }
 
       setProducts([
         {
@@ -122,7 +139,7 @@ function Products() {
       setNewDescription("");
       setNewValue("");
     },
-    [products, newDescription, newValue]
+    [newDescription, newValue, products]
   );
 
   return (
@@ -135,6 +152,7 @@ function Products() {
           products.map(prod => (
             <li key={prod.id}>
               {prod.description} - {prod.value}
+              <button onClick={() => removeProduct(prod.id)}>Excluir</button>
             </li>
           ))
         )}
@@ -143,20 +161,18 @@ function Products() {
       <br />
 
       <form onSubmit={addProduct}>
-        <label>Description</label>
         <input
           type="text"
           onChange={e => setNewDescription(e.target.value)}
           value={newDescription}
+          placeholder="Informe a descrição do produto"
         />
-        <br />
-        <label>Value</label>
         <input
           type="text"
           onChange={e => setNewValue(e.target.value)}
           value={newValue}
+          placeholder="Informe o valor do produto"
         />
-        <br />
         <button type="submit">Add</button>
       </form>
     </>
