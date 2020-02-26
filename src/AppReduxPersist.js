@@ -1,7 +1,15 @@
 import React, { useState } from "react";
+
 import { createStore, combineReducers } from "redux";
 import { Provider, useSelector, useDispatch } from "react-redux";
+
 import { BrowserRouter, Switch, Route, Redirect, Link } from "react-router-dom";
+
+import storage from "redux-persist/lib/storage";
+import { persistReducer, persistStore } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
+
+import { createBrowserHistory } from "history";
 
 // ************************************************************************
 // REDUCER AUTH
@@ -110,20 +118,34 @@ function actionRemoveProduct(id) {
 }
 
 // ************************************************************************
-// COMBINE REDUCERS
+// COMBINE REDUCERS, PERSISTOR e HISTORY
 // ************************************************************************
 const store = createStore(
-  combineReducers({ auth: authReducer, product: productReducer })
+  persistReducer(
+    {
+      key: "webapp1",
+      storage,
+      whitelist: ["product"],
+      blacklist: ["auth"]
+    },
+    combineReducers({ auth: authReducer, product: productReducer })
+  )
 );
+
+const persistor = persistStore(store);
+
+const history = createBrowserHistory();
 
 // ************************************************************************
 
 function App() {
   return (
     <Provider store={store}>
-      <BrowserRouter>
-        <Routes />
-      </BrowserRouter>
+      <PersistGate persistor={persistor}>
+        <BrowserRouter history={history}>
+          <Routes />
+        </BrowserRouter>
+      </PersistGate>
     </Provider>
   );
 }
