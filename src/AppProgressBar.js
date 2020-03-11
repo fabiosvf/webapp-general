@@ -55,7 +55,9 @@ const ProgressBar = props => {
     <>
       <StyledProgressBar>
         <StyledFiller percentage={props.percentage}>
-          <StyledLabelPercent>{props.percentage}%</StyledLabelPercent>
+          <StyledLabelPercent>
+            {props.percentage.toFixed(2)}%
+          </StyledLabelPercent>
         </StyledFiller>
       </StyledProgressBar>
       <ul>
@@ -102,7 +104,7 @@ function App() {
   );
   const mensagemDiasRestantes = <>Faltam {diasRestantes} dias</>;
 
-  const projetos = [
+  var projetos = [
     {
       item: 1,
       descricao: "NOVO MENU DE ACESSO",
@@ -472,6 +474,24 @@ function App() {
       ]
     }
   ];
+
+  var projetoProgressoGeral = {
+    item: 0,
+    descricao: "PROGRESSO GERAL",
+    tarefas: [
+      ...projetos.map(projeto => ({
+        item: projeto.item,
+        tarefa: "ITEM " + projeto.item + " - " + projeto.descricao,
+        concluida:
+          projeto.tarefas.filter(a => a.concluida).length ===
+          projeto.tarefas.length
+      }))
+    ]
+  };
+
+  projetos = [projetoProgressoGeral, ...projetos];
+
+  console.log(projetos);
 
   return (
     <StyledContent>
