@@ -50,6 +50,20 @@ const StyledItem = styled.li`
   color: ${props => (props.concluida ? "red" : "black")};
 `;
 
+const StyledMaster = styled.li`
+  border-radius: 7px;
+  border: 1px solid #ccc;
+  padding: 0 15px 15px;
+  background: #ffffaa;
+`;
+
+/*
+const StyledMaster = styled.li`
+  border-radius: ${props => (props.master ? "7px" : "")};
+  border: ${props => (props.master ? "1px solid #ccc" : "")};
+`;
+*/
+
 const ProgressBar = props => {
   return (
     <>
@@ -503,21 +517,32 @@ function App() {
         {projetos
           .map(projeto => ({
             ...projeto,
-            porcentagem_tarefas_concluidas:
+            porcentagemTarefasConcluidas:
               (projeto.tarefas.filter(a => a.concluida).length /
                 projeto.tarefas.length) *
               100
           }))
-          .map(projeto => (
-            <li>
-              <h2>ITEM {projeto.item + " - " + projeto.descricao}</h2>
-              <ProgressBar
-                key={projeto.item}
-                percentage={projeto.porcentagem_tarefas_concluidas}
-                tarefas={projeto.tarefas}
-              />
-            </li>
-          ))}
+          .map(projeto =>
+            projeto.item === 0 ? (
+              <StyledMaster>
+                <h2>ITEM {projeto.item + " - " + projeto.descricao}</h2>
+                <ProgressBar
+                  key={projeto.item}
+                  percentage={projeto.porcentagemTarefasConcluidas}
+                  tarefas={projeto.tarefas}
+                />
+              </StyledMaster>
+            ) : (
+              <li>
+                <h2>ITEM {projeto.item + " - " + projeto.descricao}</h2>
+                <ProgressBar
+                  key={projeto.item}
+                  percentage={projeto.porcentagemTarefasConcluidas}
+                  tarefas={projeto.tarefas}
+                />
+              </li>
+            )
+          )}
       </ul>
     </StyledContent>
   );
